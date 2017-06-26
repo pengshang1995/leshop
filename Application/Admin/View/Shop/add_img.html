@@ -1,0 +1,148 @@
+<include file="Common:_header"/>
+<div class="admin-main">
+    <blockquote class="layui-elem-quote">
+        <a href="javascript:;" class="layui-btn layui-btn-small" deal="add" id="add">
+            <i class="layui-icon">&#xe608;</i> 添加图片
+        </a>
+        <!-- <a href="#" class="layui-btn layui-btn-small" id="import">
+             <i class="layui-icon">&#xe608;</i> 导入信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 导出信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small" id="getSelected">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 获取全选信息
+         </a>
+         <a href="javascript:;" class="layui-btn layui-btn-small" id="search">
+             <i class="layui-icon">&#xe615;</i> 搜索
+         </a>-->
+    </blockquote>
+    <fieldset class="layui-elem-field">
+        <legend>图片列表</legend>
+        <div class="layui-field-box layui-form">
+            <table class="layui-table admin-table">
+                <thead>
+                <tr>
+                    <th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>
+                    <th>编号</th>
+                    <th>图片详情</th>
+                    <th>图片地址</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+                <empty name="list">
+                    <tr>
+                        <td colspan="4">没有任何数据</td>
+                    </tr>
+                    <else />
+                    <volist name="list" id="vo">
+                        <tr>
+                            <td><input type="checkbox"  lay-skin="primary"></td>
+                            <td>{$vo.id}</td>
+                            <td><img src="{$vo.savepath}" width="100px" height="100px"/></td>
+                            <td>{$vo.savepath}</td>
+                            <td><button class="layui-btn layui-btn-small" deal="del" aa="{$vo.id}"><i class="layui-icon"></i></button></td>
+                        </tr>
+                    </volist>
+                </empty>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <div class="admin-table-page">
+        <div id="paged" class="page">
+        </div>
+    </div>
+    <if condition="$last eq 0">
+        <div style="width: 40%; height: 20px;line-height: 20px; border: 1px solid #c43a30; border-radius: 4px;font-size: 14px; padding: 30px;">
+            该商品的图片已经上传五张,请删除后操作！！
+        </div>
+        <else />
+        <form class="layui-form" action="javascript:;" id="data_forms">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">多图上传</label>
+                <div class="layui-input-block" style="width: 50%">
+                    <webuploader name="image" url="{:U('Admin/Shop/ajax_upload')}" word="注：（最多上传五张图片）" only="{$last}" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" value="{$id}" name="id" >
+                    <button class="layui-btn" lay-submit="" deal="upload" lay-filter="demo1">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </if>
+
+</div>
+<webuploaderjs />
+<script type="text/javascript" src="__PUBLIC__/admin/layui/layui.js"></script>
+<script src="__PUBLIC__/admin/layui/lay/lib/jquery.js" type="text/javascript"></script>
+<script src="__PUBLIC__/admin/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/layer.js"></script>
+<script type="text/javascript">
+    var public ="__PUBLIC__/admin/";
+    layui.config({
+        base: public+'js/'
+    });
+
+    layui.use(['paging', 'form'], function() {
+        var $ = layui.jquery,
+            paging = layui.paging(),
+            layerTips = parent.layer === undefined ? layui.layer : parent.layer, //获取父窗口的layer对象
+            layer = layui.layer, //获取当前窗口的layer对象
+            form = layui.form();
+
+    });
+    $('button').click(
+        function () {
+            var deal=$(this).attr('deal');
+            switch (deal){
+                case 'del':
+                    var id=$(this).attr('aa');
+                    layer.confirm('你确定要删除吗？', {
+                        btn: ['确定', '取消'] //可以无限个按钮
+                        ,btn3: function(index, layero){
+                            //按钮【按钮三】的回调
+                        }
+                    }, function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"__MODULE__/Shop/deleteImg",
+                            type:'post',
+                            data:{'id':id},
+                            async:true,
+                            success:function (data) {
+                                if(data==true){
+                                    layer.msg('删除成功');
+                                    location.reload();
+                                }else if(data==false){
+                                    layer.msg('删除失败');
+                                }
+                            }
+                        });
+                    });
+                    break;
+                case 'upload':
+                    var id=$(this).attr('aa');
+                    $.ajax({
+                        url:"__MODULE__/Shop/uploadImg",
+                        type:'post',
+                        data:$('#data_forms').serialize(),
+                        async:true,
+                        success:function (data) {
+                            if (data==true){
+                                layer.msg('添加成功');
+                                location.reload();
+                            }else{
+                                layer.msg('添加失败');
+                            }
+                        }
+                    });
+                    break;
+            }
+        }
+    );
+</script>
+<include file="layout:footer"/>

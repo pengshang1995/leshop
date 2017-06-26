@@ -1,0 +1,138 @@
+<include file="Common/_header"/>
+<div class="page-container">
+    <table class="table table-border table-bordered table-hover" ng-app="app" ng-controller="MenuCtrl">
+        <input type="hidden" ng-model="id"  id="menuid" value="{$id}" />
+        <tbody>
+        <tr ng-if="names.type==1">
+            <td width="100">父菜单：</td>
+            <td>{{names.parentMenu}}</td>
+        </tr>
+        <tr>
+            <td width="100">名称：</td>
+            <td>{{names.title}}</td>
+        </tr>
+        <tr>
+            <td>类型：</td>
+            <td ng-if="names.type == 0 ">主菜单</td>
+            <td ng-if="names.type == 1 ">子菜单</td>
+        </tr>
+        <tr ng-if="names.type==1">
+            <td width="100">链接：</td>
+            <td>{{names.name}}</td>
+        </tr>
+        <tr>
+            <td>排序：</td>
+            <td>{{names.sort}}</td>
+        </tr>
+        <tr ng-if="names.type==1">
+            <td>权限</td>
+            <td ><a href="javascript:" style="margin-left: 3px" class="btn  btn-primary-outline size-MINI radius"  ng-repeat="x in childs"  ng-click="layer_show(x.title,'{:U(\'Menu/editAuth\')}',x.id,x.pid)">{{x.title}}</a></td>
+        </tr>
+
+        <tr ng-if="names.type==0">
+            <td>操作：</td>
+            <td>
+                <a  class="btn btn-primary radius size-S" href="javascript:" ng-click="layer_show('添加菜单','{:U(\'Menu/addMenu\')}')">
+                    添加菜单
+                </a>
+                <a class="btn btn-primary radius size-S" href="javascript:" ng-click="layer_show('修改菜单','{:U(\'Menu/editMenu\')}')">修改菜单</a>
+                <button class="btn btn-primary radius 	size-S" ng-click="menu_delete('{:U(\'Menu/deleteMenu\')}')">删除</button>
+            </td>
+        </tr>
+        <tr ng-if="names.type==1">
+            <td>操作：</td>
+            <td>
+                <a  class="btn btn-primary radius size-S" href="javascript:" ng-click="layer_show('添加权限','{:U(\'Menu/addAuth\')}')">
+                    添加权限
+                </a>
+                <a class="btn btn-primary radius size-S" href="javascript:" ng-click="layer_show('修改菜单','{:U(\'Menu/editMenu\')}')">修改菜单</a>
+                <button class="btn btn-primary radius 	size-S" ng-click="menu_delete('{:U(\'Menu/deleteMenu\')}')">删除</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<include file="Common/_footer"/>
+<script type="text/javascript">
+    app.controller('MenuCtrl',function ($http,$scope) {
+        var id=$('#menuid').val();
+        $http({
+            method: 'POST',
+            url: "{:U('Menu/getOne')}",
+            data:{'id':id}
+        }).then(function successCallback(response) {
+            $scope.names = response.data.records;
+            $scope.childs=response.data.child;
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+        $scope.menu_delete=function (url) {
+            $http({
+                method: 'POST',
+                url: url,
+                data:{'id':id}
+            }).then(function successCallback(response) {
+                layer.confirm('确认要删除吗？',function(index){
+                    layer.msg(response.data.message, {
+                        icon: response.data.icon,
+                        time: 2000
+                    });
+                    parent.location.reload();
+                });
+
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        }
+        $scope.layer_show=function(title,url,w,h){
+           switch (title){
+               case "删除菜单":
+                   url+="?id="+$scope.names.id;
+                   break;
+               case "添加权限":
+                   url+="?pid="+$scope.names.id;
+                   break;
+               case "添加菜单":
+                   url+="?id="+$scope.names.id+"&type="+$scope.names.type;
+                   break;
+               case "修改菜单":
+                   url+="?id="+$scope.names.id+"&type="+$scope.names.type;
+                   break;
+               default:
+                   url+="?id="+w+"&pid="+h;
+                    break;
+           }
+            if (title == null || title == '') {
+                title=false;
+            };
+            if (url == null || url == '') {
+                url="404.html";
+            };
+            if (w == null || w == '') {
+                w=800;
+            };
+            if (h == null || h == '') {
+                h=($(window).height() - 50);
+            };
+            var index = layer.open({
+                type: 2,
+                content: url,
+                area: ['300px', '195px'],
+                title: title,
+                maxmin: true
+            });
+            layer.full(index);
+            /*  layer.open({
+             type: 2,
+             area: [w+'px', h +'px'],
+             fix: false, //不固定
+             maxmin: true,
+             shade:0.4,
+
+             });*/
+        }
+    })
+</script>
+</body>
+</html>

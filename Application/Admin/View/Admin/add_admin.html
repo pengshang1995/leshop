@@ -1,0 +1,157 @@
+<include file="Common/_header"/>
+
+<article class="page-container">
+    <form class="form form-horizontal" id="form-admin-add"  ng-app="app" ng-controller="addModelCtrl" >
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>管理员：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="adminName"  username="username" ng-model="formData.username">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" ng-model="formData.password" name="password">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" ng-model="formData.password2" name="password2">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="sex" type="radio" id="sex-1" value="1"  checked  ng-model="formData.sex">
+                    <label for="sex-1">男</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="sex-2" name="sex"  value="0" ng-model="formData.sex">
+                    <label for="sex-2">女</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" ng-model="formData.tel" id="phone" name="tel">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="@" name="email" ng-model="formData.email" id="email">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">角色：</label>
+            <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
+			<select class="select" name="adminRole" size="1" ng-model="formData.adminRole">
+				<option ng-repeat="x in roleList" ng-value="x.id">{{x.title}}</option>
+			</select>
+			</span> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">开启状态</label>
+            <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
+			<select class="select" name="adminRole" size="1" ng-model="formData.status">
+				<option value="1" >启用</option>
+				<option value="0">禁用</option>
+			</select>
+			</span> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="" cols="" rows="" class="textarea"  ng-model="formData.desc" placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button class="btn btn-primary radius" ng-click="submit()">&nbsp;&nbsp;提交&nbsp;&nbsp;</button>
+            </div>
+        </div>
+    </form>
+</article>
+
+<include file="Common/_footer"/>
+<script type="text/javascript">
+    app.controller('addModelCtrl',function ($scope,$http) {
+        $http({
+            method:'POST',
+            url:"{:U('Role/getRole')}"
+        }).then(function successCallback(response) {
+            $scope.roleList=response.data;
+            console.log($scope.roleList);
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+        $scope.submit=function(){
+            $http({
+                method:'POST',
+                url:'{:U(\'Admin/add_admin_deal\')}',
+                data:$scope.formData
+            }).then(function successCallback(response) {
+                layer.msg(response.data.message, {
+                    icon: response.data.icon,
+                    time: 2000
+                });
+                if(response.data.icon==1){
+                    setTimeout(function () {
+                        parent.location.reload();
+                    },2100);
+                }
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        }
+        
+    })
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        $("#form-admin-add").validate({
+            rules:{
+                username:{
+                    required:true,
+                    minlength:4,
+                    maxlength:16
+                },
+                password:{
+                    required:true,
+                },
+                password2:{
+                    required:true,
+                    equalTo: "#password"
+                },
+                sex:{
+                    required:true,
+                },
+                tel:{
+                    required:true,
+                    isPhone:true,
+                },
+                email:{
+                    required:true,
+                    email:true,
+                },
+                adminRole:{
+                    required:true,
+                }
+            },
+            onkeyup:false,
+            focusCleanup:true
+
+        });
+    });
+
+
+</script>
+</body>
+</html>

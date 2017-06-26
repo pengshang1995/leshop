@@ -1,0 +1,149 @@
+<extend name="layout:base" />
+<block name="title"><title>Lee商城--首页</title></block>
+<block name="top-style">
+    <link href="__PUBLIC__/css/slider.css" rel="stylesheet" type="text/css" media="all"/>
+</block>
+<block name="main">
+
+    <div class="main">
+        <div class="header_slide">
+            <div class="header_bottom_left">
+                <div class="categories">
+                    <ul>
+                        <h3>商品分类</h3>
+                        <volist name="goodtype" id="vo">
+                        <li><a href="{:U('Good/goodlist',array('typeid'=>$vo['id'],'pid'=>$vo['pid']))}">{$vo.typename}</a></li>
+                        </volist>
+                    </ul>
+                </div>
+            </div>
+            <div class="header_bottom_right">
+                <div class="slider">
+                    <div id="slider">
+                        <div id="mover" >
+                            <volist name="slider" id="vo">
+                                <div class="slide">
+
+                                    <img src="{$vo.img_path}" width="750px" height="451px">
+                                </div>
+                            </volist>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="content">
+            <div class="content_top">
+                <div class="heading">
+                    <h3>女士专区</h3>
+                </div>
+                <div class="see">
+                    <p><a href="{:U('Good/goodlist?pid=41')}">More</a></p>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="section group">
+                <volist name="newlist" id="vo">
+                    <div class="grid_1_of_4 images_1_of_4">
+                        <a href="{:U('Good/goodPreview',array('id'=> $vo['id'] ))}"><img width="224px" height="224px" src="{$vo.savepath}" alt="" /></a>
+                        <h2 style="font-size: 14px;">{$vo.goodname}</h2>
+                            <div class="price-details">
+                            <div class="price-number">
+                                <p><span class="rupees">${$vo.goodprice}</span></p>
+                            </div>
+                            <div class="add-cart">
+                                <h4><a href="javascript:;" aa="{$vo.id}">加入搭配</a><a href="javascript:;" aa="{$vo.id}">加入购物车</a></h4>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+                </volist>
+            </div>
+            <div class="content_bottom">
+                <div class="heading">
+                    <h3>男士专区</h3>
+                </div>
+                <div class="see">
+                    <p><a href="{:U('Good/goodlist?pid=35')}">More</a></p>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="section group">
+                <volist name="manlist" id="vo">
+                    <div class="grid_1_of_4 images_1_of_4">
+                        <a href="{:U('Good/goodPreview',array('id'=> $vo['id'] ))}"><img width="224px" height="224px" src="{$vo.savepath}" alt="" /></a>
+                        <h2 style="font-size: 14px;">{$vo.goodname}</h2>
+                        <div class="price-details">
+                            <div class="price-number">
+                                <p><span class="rupees">${$vo.goodprice}</span></p>
+                            </div>
+                            <div class="add-cart">
+                                <h4><a href="javascript:;" aa="{$vo.id}">加入搭配</a><a href="javascript:;" aa="{$vo.id}">加入购物车</a></h4>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="footer-script">
+
+    <script src="__PUBLIC__/layer.js"></script>
+    <script type="text/javascript">
+        $('a').click(function () {
+            switch ($(this).html()) {
+                case '加入购物车':
+                    id = $(this).attr('aa');
+                    $.ajax({
+                        url: "__MODULE__/Cart/addCart",
+                        type: 'post',
+                        data: {'id': id},
+                        async: true,
+                        success: function (data) {
+                            if (data == true) {
+                                layer.closeAll();
+                                layer.msg('添加成功');
+                                location.reload();
+                            } else if (data == false) {
+                                layer.msg('请先登录!');
+                                location.href = "__MODULE__/Public/login";
+                            } else if (data == 'falseAdd') {
+                                layer.msg('商品没有货源，请耐心等待商家补充');
+                            }
+                        }
+                    });
+                    break;
+                case '加入搭配':
+                    id = $(this).attr('aa');
+                    $.ajax({
+                        url: "__MODULE__/Collocate/add",
+                        type: 'post',
+                        data: {'id': id},
+                        async: true,
+                        success: function (data) {
+                            if (data == true) {
+                                layer.closeAll();
+                                layer.msg('添加成功');
+                                location.reload();
+                            } else if (data == false) {
+                                layer.msg('请先登录!');
+                                location.href = "__MODULE__/Public/login";
+                            } else if (data == 'falseAdd') {
+                                layer.msg('模型不存在');
+                            }
+                        }
+                    });
+
+            }
+        });
+    </script>
+</block>
+
+
+

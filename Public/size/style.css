@@ -1,0 +1,45 @@
+.size *{margin:0;padding:0;}
+.size li{list-style:none;}
+.size{width:540px;height:550px;background:url(baidu_size_bg.jpg) no-repeat;font-family:'微软雅黑';font-size:12px;margin:0 auto; }
+.size_top{width:540px;overflow:hidden;}
+.size_top h1{float:left;padding-left:12px;font-size:20px;color:#fff;line-height:68px;}
+.size_top img{float:right;padding-right:10px;}
+.size_main{width:512px;margin:19px 0 0 18px;overflow:hidden;}
+.size_left{float:left;}.size_left,.size_left div{width:96px;color:#2f2e2e;}
+.size_left div{margin-bottom:8px;}
+.size_left h3{width:97px;height:23px;background:url(baidu_ico_bg2.gif) no-repeat right 0;margin-left:0;} 
+.size_left h3 span{display:block;width:72px;height:22px;padding-left:9px;background:url(baidu_select_bg1.gif) no-repeat;font-size:14px;line-height:20px;cursor:pointer;}
+.size_left ul{width:76px;margin-left:4px;font-size:12px;}
+.size_left ul li{width:54px;background:#fff url(baidu_ico_bg1.gif) no-repeat 6px 50%;padding-left:22px;font-size:'宋体';line-height:28px;cursor:pointer;}
+.size_left .size_btn3{margin-bottom:2px;}
+.size_left .size_btn3 h3{background:url(baidu_ico_bg3.gif) no-repeat right 0;}
+.size_right{width:400px;float:right;display:inline;margin-right:4px;color:#2f2e2e;}
+.size_right table{margin-top:5px;font-size:12px;border-collapse:collapse;}
+.size_right td{background:#FFF;border:1px solid #2f2e2e;text-align:center;}
+
+.right1 h2,.right2 h2{width:79px;}
+.right_form h2{height:30px;font-size:14px;color:#fff;background:url(baidu_size_btn.jpg) no-repeat;line-height:28px;text-align:center;}
+.right_form .p{width:392px;margin:10px 0;font-size:12px;font-family:'宋体';line-height:20px;}
+.right11 .p{width:392px;margin:10px 0;font-size:12px;font-family:'宋体';line-height:17px;}
+.right_form .p span{display:block;padding:6px 0;}
+.right_form table td{height:20px;line-height:20px;font-family:'宋体'}
+.right1 table td{padding:0px 15px;}
+.right1 .tab_1 td{padding:0px 15px;}
+.right2 table td{padding:0px 5px 0 6px;}
+.right2 .tab_1 td{padding:0px 5px 0 5px;}
+.right2 .p{height:144px;}
+
+.right_same form{width:380px;height:70px;padding-left:15px;overflow:hidden;background:#cbccce;}
+.right_same form p{float:left;}
+.right_same form p span{display:block;padding-top:6px;_padding-top:4px;}
+.right_same form .cmsc{width:149px;overflow:hidden;padding:20px 0 0 10px;}
+.right_same form .cmsc button{ float:left; vertical-align:middle;cursor:pointer;}
+.right_same form .cmsc input{float:left; vertical-align:middle;}
+.right_same form input{width:62px;height:20px;margin-left:5px;margin-top:2px; vertical-align:middle;}
+.right_same form button{width:78px;height:28px;border:none; background:none;}
+.right_same h2{padding-top:10px;background:none;color:#2f2e2e;text-align:left;height:24px;}
+.right3 table td,.right4 table td,.right7 table td{padding:0 5px;}.right5 table td{padding:0 10px;}.right8 table td{padding:0 2px;}.right9 table td{padding:0 3px 0 4px;}.right10 table td{padding:0 3px 0 4px;}.right10 .tab_10 td{padding:0 3px;}.right11 table td{padding:0 24px;height:16px;line-height:16px;}.right12 table td{padding:0 10px 0 11px}.right13 table td{padding:0 16px 0 15px}.right14 table td{padding:0 13px}.right15 table td{padding:0 4px;height:16px;line-height:16px;}
+.right9 table td{height:16px;line-height:16px;}
+
+.size_foot{width:540px;text-align:center;}
+.size_foot span{color:#af6037;text-decoration:none;font-family:'Arial';}.size_foot span a{color:#af6037;}

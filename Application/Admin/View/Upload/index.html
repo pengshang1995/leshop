@@ -1,0 +1,135 @@
+<include file="layout:head"/>
+<div class="admin-main">
+ <!--   <blockquote class="layui-elem-quote">
+        <a href="javascript:;" class="layui-btn layui-btn-small" deal="add" id="add">
+            <i class="layui-icon">&#xe608;</i> 添加轮播图
+        </a>
+         <a href="#" class="layui-btn layui-btn-small" id="import">
+             <i class="layui-icon">&#xe608;</i> 导入信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 导出信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small" id="getSelected">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 获取全选信息
+         </a>
+         <a href="javascript:;" class="layui-btn layui-btn-small" id="search">
+             <i class="layui-icon">&#xe615;</i> 搜索
+         </a>
+    </blockquote>-->
+    <fieldset class="layui-elem-field">
+        <legend>轮播图管理</legend>
+        <div class="layui-field-box layui-form">
+            <table class="layui-table admin-table">
+                <thead>
+                <tr>
+                    <th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>
+                    <th>id</th>
+                    <th>图片</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+                <volist id="vo" name="data">
+                    <tr>
+                        <td><input type="checkbox" lay-skin="primary"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.img_path}</td>
+                        <td id='state_{$vo.id}'>
+                            <if condition="$vo['state'] eq 0 ">禁用
+                                <else/>	启用</if>
+                        </td>
+                        <td>
+                            <button class="layui-btn layui-btn-small" deal="del" aa="{$vo.id}"><i class="layui-icon"></i></button>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <div class="admin-table-page">
+        <div id="paged" class="page">
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/plugins/layui/layui.js"></script>
+<script src="__PUBLIC__/admin/plugins/layui/lay/lib/jquery.js" type="text/javascript"></script>
+<script src="__PUBLIC__/admin/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/layer.js"></script>
+<script type="text/javascript">
+    var public ="__PUBLIC__/admin/";
+    layui.config({
+        base: public+'js/'
+    });
+
+    layui.use(['paging', 'form'], function() {
+        var $ = layui.jquery,
+            paging = layui.paging(),
+            layerTips = parent.layer === undefined ? layui.layer : parent.layer, //获取父窗口的layer对象
+            layer = layui.layer, //获取当前窗口的layer对象
+            form = layui.form();
+
+    });
+    $('button').click(
+        function () {
+            var deal=$(this).attr('deal');
+            switch (deal){
+                case 'edit':
+                    var id=$(this).attr('aa');
+                    console.log(id);
+                    layer.open({
+                        type: 2,
+                        area: ['100%', '100%'],
+                        shadeClose: true, //点击遮罩关闭
+                        content:'__MODULE__/Rule/SelectOneAdmin?id='+id
+                    });
+                    break;
+                case 'del':
+                    var id=$(this).attr('aa');
+                    layer.confirm('你确定要删除吗？', {
+                        btn: ['确定', '取消'] //可以无限个按钮
+                        ,btn3: function(index, layero){
+                            //按钮【按钮三】的回调
+                        }
+                    }, function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"__MODULE__/Upload/del_img",
+                            type:'post',
+                            data:{'id':id},
+                            async:true,
+                            success:function (data) {
+                                if(data==true){
+                                    layer.msg('删除成功');
+                                    location.reload();
+                                }else if(data==false){
+                                    layer.msg('删除失败');
+                                }
+                            }
+                        });
+                    });
+                    break;
+
+            }
+        }
+    );
+    $('a').click(
+        function () {
+            var deal=$(this).attr('deal');
+            switch (deal){
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        area: ['100%', '100%'],
+                        shadeClose: true, //点击遮罩关闭
+                        content:'__MODULE__/Rule/add_admin_page'
+                    });
+                    break;
+
+            }
+        }
+    );
+</script>
+<include file="layout:footer"/>

@@ -1,0 +1,161 @@
+<include file="Common/_header"/>
+<article class="page-container">
+    <form  class="form form-horizontal" id="form-admin-role-add"  ng-app="app" ng-controller="RoleCtrl" novalidate="novalidate" name="roleAdd" novalidate>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" name="title" value="" placeholder="" id="roleName" ng-model="form.title" required>
+                <span style="color:red" ng-show="roleAdd.title.$invalid">
+                    <span ng-show="roleAdd.title.$error.required">菜单名称是必须的。</span>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">权限列表：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <foreach name="arr" item="vo">
+                    <dl class="permission-list">
+                        <dt>
+                            <label>
+                                <input type="checkbox"  value="{$vo.id}" name="rules" >
+                                {$vo.title}</label>
+                        </dt>
+                        <dd>
+                            <foreach item="val" name="vo._data">
+                                <dl class="cl permission-list2">
+                                    <dt>
+                                        <label class="">
+                                            <input type="checkbox" value="{$val.id}"   name="rules" >
+                                            {$val.title}</label>
+                                    </dt>
+                                    <dd>
+                                        <foreach name="val._data" item="value">
+                                            <label class="">
+                                                <input type="checkbox"  value="{$value.id}"   name="rules">
+                                                {$value.title}</label>
+                                        </foreach>
+                                    </dd>
+                                </dl>
+                            </foreach>
+                        </dd>
+                    </dl>
+                </foreach>
+
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button type="submit" ng-disabled="roleAdd.title.$invalid"  ng-click="sub()" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+            </div>
+        </div>
+    </form>
+</article>
+<include file="Common/_footer"/>
+<script type="text/javascript" src="lib/jquery.ztree.core.js" ></script>
+<script type="text/javascript">
+    $(function(){
+        $(".permission-list dt input:checkbox").click(function(){
+            $(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+        });
+        $(".permission-list2 dd input:checkbox").click(function(){
+            var l =$(this).parent().parent().find("input:checked").length;
+            var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+
+            if($(this).prop("checked")){
+                $(this).closest("dl").find("dt input:checkbox").prop("checked",true);
+                $(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+            }
+            else{
+                if(l==0){
+                    $(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+                }
+                if(l2==0){
+                    $(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+                }
+            }
+        });
+    });
+    app.controller('RoleCtrl',function ($http,$scope) {
+        var rules=new Array();
+        $scope.sub=function () {
+            $("input:checkbox[name='rules']:checked").each(function() { // 遍历name=test的多选框
+                rules[rules.length]=$(this).val();  // 每一个被选中项的值
+            });
+            $scope.form.rules=rules;
+            $http({
+                method: 'POST',
+                url: "{:U('Role/add_deal')}",
+                data:$scope.form
+            }).then(function successCallback(response) {
+                layer.msg(response.data.message, {
+                    icon: response.data.icon,
+                    time: 2000
+                });
+                if(response.data.icon==1){
+                    setTimeout(function () {
+                        parent.location.reload();
+                    },2100);
+                }
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        }
+
+
+        /*$scope.frist=function ($event) {
+         var obj=$event.target;
+         $(obj).closest("dl").find("dd input:checkbox").prop("checked",$(obj).prop("checked"));
+         }
+         $scope.two=function ($event) {
+         var obj=$event.target;
+         var l =$(obj).parent().parent().find("input:checked").length;
+         var l2=$(obj).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+         if($(obj).prop("checked")){
+         $(obj).closest("dl").find("dt input:checkbox").prop("checked",true);
+         $(obj).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+         }
+         else{
+         if(l==0){
+         console.log(1);
+         $(obj).closest("dl").find("dt input:checkbox").prop("checked",false);
+         }
+         if(l2==0){
+         console.log(2);
+         $(obj).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+         }
+         }
+         }*/
+        $scope.layer_show=function(title,url,w,h){
+            if (title == null || title == '') {
+                title=false;
+            };
+            if (url == null || url == '') {
+                url="404.html";
+            };
+            if (w == null || w == '') {
+                w=800;
+            };
+            if (h == null || h == '') {
+                h=($(window).height() - 50);
+            };
+            var index = layer.open({
+                type: 2,
+                content: url,
+                area: ['300px', '195px'],
+                title: title,
+                maxmin: true
+            });
+            layer.full(index);
+            /*  layer.open({
+             type: 2,
+             area: [w+'px', h +'px'],
+             fix: false, //不固定
+             maxmin: true,
+             shade:0.4,
+
+             });*/
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<extend name="layout:base" />
+<block name="title"><title>Lee商城--全部商品</title></block>
+<block name="top-style">
+    <link href="__PUBLIC__/css/slider.css" rel="stylesheet" type="text/css" media="all"/>
+</block>
+<block name="main">
+    <div class="main">
+        <div class="content">
+            <div class="content_top">
+                <div class="heading">
+                    <h3>全部商品</h3>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="section group">
+                <volist name="newlist.data" id="vo">
+                    <div class="grid_1_of_4 images_1_of_4">
+                        <a href="{:U('Good/goodPreview',array('id'=> $vo['id'] ))}"><img width="224px" height="224px" src="{$vo.savepath}" alt="" /></a>
+                        <h2 style="font-size: 14px;">{$vo.goodname}</h2>
+                        <div class="price-details">
+                            <div class="price-number">
+                                <p><span class="rupees">${$vo.goodprice}</span></p>
+                            </div>
+                            <div class="add-cart">
+                                <h4><a href="javascript:;" aa="{$vo.id}">加入搭配</a><a href="javascript:;" aa="{$vo.id}">加入购物车</a></h4>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+                </volist>
+
+            </div>
+            <div id="demo3">
+
+            </div>
+            <input type="hidden" id="total" value="{$newlist.total}" />
+            <input type="hidden" id="page" value="{$p}" />
+        </div>
+    </div>
+</block>
+<block name="footer-script">
+    <script src="__PUBLIC__/layui/layui.js"></script>
+    <script>
+        function setParam(param,value){
+            var query = location.search.substring(1);
+            var p = new RegExp("(^|)" + param + "=([^&]*)(|$)");
+            if(p.test(query)){
+                //query = query.replace(p,"$1="+value);
+                var firstParam=query.split(param)[0];
+                var secondParam=query.split(param)[1];
+                if(secondParam.indexOf("&")>-1){
+                    var lastPraam=secondParam.split("&")[1];
+                    return  '?'+firstParam+'&'+param+'='+value+'&'+lastPraam;
+                }else{
+                    if(firstParam){
+                        return '?'+firstParam+''+param+'='+value;
+                    }else{
+                        return '?'+param+'='+value;
+                    }
+                }
+            }else{
+                if(query == ''){
+                    return '?'+param+'='+value;
+                }else{
+                    return '?'+query+'&'+param+'='+value;
+                }
+            }
+        }
+        var total=$('#total').val();
+        var p=$('#page').val();
+        layui.use(['laypage', 'layer'], function(){
+            var laypage = layui.laypage
+                ,layer = layui.layer;
+            laypage({
+                cont: 'demo3'
+                ,pages: total
+                ,skip: true,
+                curr: p,
+                jump: function(e, first){ //触发分页后的回调
+                    if(!first){ //一定要加此判断，否则初始时会无限刷新
+                        location.href=setParam("p",e.curr);
+                    }
+                }
+            });
+
+        });
+    </script>
+    <script src="__PUBLIC__/layer.js"></script>
+    <script type="text/javascript">
+        $('a').click(function () {
+            switch ($(this).html()){
+                case '加入购物车':
+                    id=$(this).attr('aa');
+                    $.ajax({
+                        url:"__MODULE__/Cart/addCart",
+                        type:'post',
+                        data:{'id':id},
+                        async:true,
+                        success:function (data) {
+                            if(data==true){
+                                layer.closeAll();
+                                layer.msg('添加成功');
+                                location.reload();
+                            }else if(data==false){
+                                layer.msg('请先登录!');
+                                location.href="__MODULE__/Public/login";
+                            }else if(data=='falseAdd'){
+                                layer.msg('添加失败');
+                            }
+                        }
+                    });
+                    break;
+                case '加入搭配':
+                    id = $(this).attr('aa');
+                    $.ajax({
+                        url: "__MODULE__/Collocate/add",
+                        type: 'post',
+                        data: {'id': id},
+                        async: true,
+                        success: function (data) {
+                            if (data == true) {
+                                layer.closeAll();
+                                layer.msg('添加成功');
+                                location.reload();
+                            } else if (data == false) {
+                                layer.msg('请先登录!');
+                                location.href = "__MODULE__/Public/login";
+                            } else if (data == 'falseAdd') {
+                                layer.msg('模型不存在');
+                            }
+                        }
+                    });
+                    break;
+
+            }
+        });
+    </script>
+</block>

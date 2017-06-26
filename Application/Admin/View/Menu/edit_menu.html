@@ -1,0 +1,140 @@
+<include file="Common/_header"/>
+<div class="page-container" >
+    <form class="form" ng-app="app" ng-controller="MenuCtrl"   id="form-add" novalidate="novalidate" name="formAdd" novalidate>
+        <table class="table table-border table-bordered table-hover ">
+            <input type="hidden" ng-model="id"  id="menuid" value="{$id}" />
+            <tbody>
+            <tr>
+                <td width="100">类型：</td>
+                <td ng-if="type==0">主菜单</td>
+                <td ng-if="type==1">子菜单</td>
+            </tr>
+            <tr id="trparentid" ng-if="type==1">
+                <td width="100">父菜单：</td>
+                <td>
+                            <span class="select-box">
+                            <select ng-model="addData.pid" class="select" id="parentid" ng-init="addData.pid=id" required>
+                                   <option ng-repeat="x in parentMenu"  ng-value="x.id" >{{x.title}}</option>
+                            </select>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td width="100">名称：</td>
+                <td>
+                    <input type="text" class="input-text" value="" name="title" placeholder="菜单名称" ng-model="addData.title" required>
+                    <span style="color:red" ng-show="formAdd.title.$invalid">
+                            <span ng-show="formAdd.title.$error.required">菜单名称是必须的。</span>
+                        </span>
+                </td>
+            </tr>
+
+            <tr ng-if="type!=0">
+                <td>链接：</td>
+                <td>
+                    <input type="text" class="input-text" value="" name="name" placeholder="菜单链接" ng-model="addData.name" required>
+                    <span style="color:red" ng-show="formAdd.name.$invalid">
+                            <span ng-show="formAdd.name.$error.required">链接是必须的。</span>
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td>排序：</td>
+                <td><input type="text" class="input-text" value="" name="sort" placeholder="排序" id="sort" ng-init="addData.sort=0" ng-model="addData.sort"></td>
+            </tr>
+            <tr>
+                <td>操作：</td>
+                <td>
+
+                    <input type="submit" ng-disabled="formAdd.name.$invalid ||  formAdd.title.$invalid" ng-click="submit_save()" class="btn btn-primary radius size-S"   value="提交" >
+
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+<include file="Common/_footer"/>
+<script type="text/javascript">
+    app.controller('MenuCtrl',function ($http,$scope) {
+        $http({
+            method: 'POST',
+            url: "{:U('Menu/getMenu')}",
+            data:{pid:0}
+        }).then(function successCallback(response) {
+            $scope.parentMenu = response.data;
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+        var id=$('#menuid').val();
+        $http({
+            method: 'POST',
+            url: "{:U('Menu/getOne')}",
+            data:{'id':id}
+        }).then(function successCallback(response) {
+            $scope.addData = response.data.records;
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+
+        $scope.init = function() {
+            $scope.id = "{$id}";
+            $scope.type = "{$type}";
+        };
+
+        $scope.init();
+        $scope.submit_save=function () {
+            $http({
+                method: 'POST',
+                url: "{:U('Menu/save_deal')}",
+                data:$scope.addData
+            }).then(function successCallback(response) {
+                layer.msg(response.data.message, {
+                    icon: response.data.icon,
+                    time: 2000
+                });
+                if(response.data.icon==1){
+                    setTimeout(function () {
+                        parent.location.reload();
+                    },2100);
+                }
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        }
+        $scope.checkMenuType=function (obj) {
+            $scope.type=obj;
+        }
+        $scope.layer_show=function(title,url,w,h){
+            if (title == null || title == '') {
+                title=false;
+            };
+            if (url == null || url == '') {
+                url="404.html";
+            };
+            if (w == null || w == '') {
+                w=800;
+            };
+            if (h == null || h == '') {
+                h=($(window).height() - 50);
+            };
+            var index = layer.open({
+                type: 2,
+                content: url,
+                area: ['300px', '195px'],
+                title: title,
+                maxmin: true
+            });
+            layer.full(index);
+            /*  layer.open({
+             type: 2,
+             area: [w+'px', h +'px'],
+             fix: false, //不固定
+             maxmin: true,
+             shade:0.4,
+
+             });*/
+        }
+    })
+</script>
+</body>
+</html>

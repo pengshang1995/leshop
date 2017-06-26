@@ -1,0 +1,184 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>商城登录</title>
+<!--	<link rel="stylesheet" type="text/css" href="/leshop/Public/css/normalize.css" />-->
+	<!--<link rel="stylesheet" type="text/css" href="/leshop/Public/css/htmleaf-demo.css">-->
+	<link rel="stylesheet" type="text/css" href="/leshop/Public/css/login-style.css">
+	<!--[if IE]>
+	<script src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+<header>
+	<div class="w">
+		<div class="logo">
+			<a href="#"><img src="/leshop/Public/images/logo.png" style="position: relative;left: 0px; top:0px" /></a>
+		</div>
+	</div>
+</header>
+<div class="bg">
+	<div class="w" id="bg-banner">
+		<div id="wrapper" class="login-page">
+			<div id="login_form" class="form">
+				<form class="register-form">
+					<input type="text" placeholder="电子邮件" name="email" id="r_user_name"/>
+					<input type="password" placeholder="密码" name="password" id="r_password" />
+					<input type="password" placeholder="重复密码" name="re-password" id="r_emial"/>
+					<button id="create">创建账户</button>
+					<p class="message">已经有了一个账户? <a href="#">立刻登录</a></p>
+				</form>
+				<form class="login-form">
+					<input type="text" placeholder="邮箱"  name="email" id="user_name"/>
+					<input type="password" placeholder="密码" name="password" id="password"/>
+					<button id="login">登　录</button>
+					<p class="message">还没有账户? <a href="#">立刻创建</a></p>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+</div>
+<footer style="margin-top: 10px">
+	<div class="w">
+		<div id="footer-2013">
+			<div class="links">
+				<a rel="nofollow" target="_blank" href="//www.jd.com/intro/about.aspx">
+					关于我们
+				</a>
+				|
+				<a rel="nofollow" target="_blank" href="//www.jd.com/contact/">
+					联系我们
+				</a>
+				|
+				<a rel="nofollow" target="_blank" href="//zhaopin.jd.com/">
+					人才招聘
+				</a>
+				|
+				<a rel="nofollow" target="_blank" href="//www.jd.com/contact/joinin.aspx">
+					商家入驻
+				</a>
+				|
+				<a rel="nofollow" target="_blank" href="//www.jd.com/intro/service.aspx">
+					广告服务
+				</a>
+				|
+				<a target="_blank" href="/links.vm/club.jd.com/links.aspx">
+					友情链接
+				</a>
+				|
+				<a target="_blank" href="//media.jd.com/">
+					销售联盟
+				</a>
+				|
+				<a target="_blank" href="//en.jd.com/" clstag="pageclick|keycount|20150112ABD|9">English Site</a>
+			</div>
+			<div class="copyright">
+				2017 &copy;<a href="http://m.zhengjinfan.cn/">php Coder</a> 德州学院
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script src="/leshop/Public/js/jquery-2.1.1.min.js" type="text/javascript"></script>
+<script src="/leshop/Public/layer.js" type="text/javascript"></script>
+<script type="text/javascript">
+    function check_login()
+    {
+        var name=$("#user_name").val();
+        var pass=$("#password").val();
+        if(name!="" && pass!="")
+        {
+            $.ajax({
+                'url':'/leshop/index.php/Home/Public/do_login',
+                type:'post',
+                data:$(".login-form").serialize(),
+                success:function (data) {
+                    if(data==1){
+                        layer.msg("登录成功");
+                        window.location.href="/leshop/index.php/Home/Index/index";
+                    }else{
+                        layer.msg(data);
+                        $("#login_form").removeClass('shake_effect');
+                        setTimeout(function()
+                        {
+                            $("#login_form").addClass('shake_effect')
+                        },1);
+                    }
+
+                }
+            });
+        }
+        else
+        {
+            layer.msg('用户名或密码不能为空');
+            $("#login_form").removeClass('shake_effect');
+            setTimeout(function()
+            {
+                $("#login_form").addClass('shake_effect')
+            },1);
+        }
+    }
+    function check_register(){
+        var name = $("#r_user_name").val();
+        var pass = $("#r_password").val();
+        var email = $("#r_email").val();
+        if(name!="" && pass!="" && email != "")
+        {
+           $.ajax({
+              'url':'/leshop/index.php/Home/Public/do_region',
+               type:'post',
+               data:$(".register-form").serialize(),
+               async:true,
+			   success:function (data) {
+				   if(data==true){
+                       layer.msg('注册成功,请您登录');
+                       $(".register-form").css('display','none');
+                       $(".login-form").css('display','block');;
+
+				   }else{
+                       layer.msg(data);
+                       $("#login_form").removeClass('shake_effect');
+                       setTimeout(function()
+                       {
+                           $("#login_form").addClass('shake_effect')
+                       },1);
+				   }
+
+               }
+		   });
+        }
+        else
+        {
+           layer.msg('注册内容不能为空');
+            $("#login_form").removeClass('shake_effect');
+            setTimeout(function()
+            {
+                $("#login_form").addClass('shake_effect')
+            },1);
+        }
+    }
+    $(function(){
+        $("#create").click(function(){
+            check_register();
+            return false;
+        })
+        $("#login").click(function(){
+            check_login();
+            return false;
+        })
+        $('.message a').click(function () {
+            $('form').animate({
+                height: 'toggle',
+                opacity: 'toggle'
+            }, 'slow');
+        });
+    })
+</script>
+</body>
+</html>

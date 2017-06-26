@@ -1,0 +1,104 @@
+<include file="Common/_header"/>
+<div class="page-container" >
+    <form class="form" ng-app="app" ng-controller="AuthCtrl"   id="form-add" novalidate="novalidate" name="formAdd" novalidate>
+        <table class="table table-border table-bordered table-hover ">
+            <tbody>
+            <tr id="trparentid">
+                <td width="100">父菜单：</td>
+                <td>
+                    {{title}}
+                </td>
+            </tr>
+            <tr>
+                <td width="100">名称：</td>
+                <td>
+                    <input type="text" class="input-text" value="" name="title" placeholder="菜单名称" ng-model="addAuth.title" required>
+                    <span style="color:red" ng-show="formAdd.title.$invalid">
+                            <span ng-show="formAdd.title.$error.required">菜单名称是必须的。</span>
+                        </span>
+                </td>
+            </tr>
+
+            <tr ng-if="type!=0">
+                <td>链接：</td>
+                <td>
+                    <input type="text" class="input-text" value="" name="name" ng-init="addAuth.percode='必填'" placeholder="菜单链接" ng-model="addAuth.percode" required>
+                    <span style="color:red" ng-show="formAdd.name.$invalid">
+                            <span ng-show="formAdd.name.$error.required">链接是必须的。</span>
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td>操作：</td>
+                <td>
+                    <input type="hidden" ng-init="addAuth.pid=pid" ng-model="addAuth.pid"  >
+                    <input type="hidden" ng-init="addAuth.type=2" ng-model="addAuth.type"  >
+                    <input type="submit" ng-disabled="formAdd.name.$invalid ||  formAdd.title.$invalid" ng-click="submit_add()" class="btn btn-primary radius size-S"   value="提交" >
+
+                </td>
+            </tr>
+            </tbody></table>
+    </form>
+</div>
+<include file="Common/_footer"/>
+<script type="text/javascript">
+    app.controller('AuthCtrl',function ($http,$scope) {
+        $scope.init = function() {
+            $scope.pid = "{$pid}";
+            $scope.title = "{$title}";
+        };
+
+        $scope.init();
+        $scope.submit_add=function () {
+            $http({
+                method: 'POST',
+                url: "{:U('Menu/add_deal')}",
+                data:$scope.addAuth
+            }).then(function successCallback(response) {
+                layer.msg(response.data.message, {
+                    icon: response.data.icon,
+                    time: 2000
+                });
+                if(response.data.icon==1){
+                    setTimeout(function () {
+                        parent.location.reload();
+                    },2100);
+                }
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        }
+        $scope.layer_show=function(title,url,w,h){
+            if (title == null || title == '') {
+                title=false;
+            };
+            if (url == null || url == '') {
+                url="404.html";
+            };
+            if (w == null || w == '') {
+                w=800;
+            };
+            if (h == null || h == '') {
+                h=($(window).height() - 50);
+            };
+            var index = layer.open({
+                type: 2,
+                content: url,
+                area: ['300px', '195px'],
+                title: title,
+                maxmin: true
+            });
+            layer.full(index);
+            /*  layer.open({
+             type: 2,
+             area: [w+'px', h +'px'],
+             fix: false, //不固定
+             maxmin: true,
+             shade:0.4,
+
+             });*/
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <webuploadercss />
+    <umeditorcss />
+    <title>{$title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="__PUBLIC__/nav/css/easyTree.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+</head>
+<body>
+<section id="page">
+    <!-- BOX -->
+    <div class="easy-tree">
+        <ul>
+            <foreach name="data" item="vo"  >
+                <if condition="$vo['name'] eq '#' ">
+                    <li aa="{$vo.name}" level="{$vo._level}" #id="{$vo.id}">{$vo.title}
+                        <notempty name="vo._data">
+                            <ul>
+                                <foreach name="vo._data" item="val">
+                                    <li aa="{$val.name}" level="{$val._level}" #id="{$val.id}">{$val.title}</li>
+                                </foreach>
+                            </ul>
+                        </notempty>
+                    </li>
+                    <else />
+                    <li aa="{$vo.name}" level="{$vo._level}" #id="{$vo.id}">{$vo.title}</li>
+                </if>
+            </foreach>
+        </ul>
+    </div>
+    <!-- /BOX -->
+</section>
+<script src="__PUBLIC__/nav/src/easyTree.js"></script>
+<script src="__PUBLIC__/layer.js"></script>
+<script type="text/javascript">
+    var module='__MODULE__';
+</script>
+<script type="text/javascript">
+    (function ($) {
+        function init() {
+            $('.easy-tree').EasyTree({
+                addable: true,
+                editable: true,
+                deletable: true
+            });
+        }
+
+        window.onload = init();
+    })(jQuery)
+</script>
+</body>
+</html>

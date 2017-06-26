@@ -1,0 +1,62 @@
+<include file="Common/_header"/>
+<input type="hidden" id="TenantId" name="TenantId" value="" />
+<div class="header"></div>
+<div class="loginWraper">
+    <div id="loginform" class="loginBox">
+        <form class="form form-horizontal" id="formLogin" action="javascript:;">
+            <div class="row cl">
+                <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
+                <div class="formControls col-xs-8">
+                    <input name="username" type="text" placeholder="账户" class="input-text size-L">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
+                <div class="formControls col-xs-8">
+                    <input  name="password" type="password" placeholder="密码" class="input-text size-L">
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-xs-offset-3">
+                    <label for="online">
+                        <input type="checkbox" name="online" id="online" value="">
+                        使我保持登录状态</label>
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-xs-offset-3">
+                    <input name="" type="submit" id="sub" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;">
+                    <input name="" type="reset" class="btn btn-default radius size-L" value="&nbsp;取&nbsp;&nbsp;&nbsp;&nbsp;消&nbsp;">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="footer">Copyright 德州学院 by ps</div>
+<include file="Common/_footer"/>
+
+<!--此乃百度统计代码，请自行删除-->
+<script>
+    $('#sub').click(
+        function () {
+            $.ajax({
+                url:"__MODULE__/Public/doLogin",
+                type:'post',
+                data:$("#formLogin").serialize(),
+                async:true,
+                success:function (data) {
+                    layer.msg(data.message, {
+                        icon: data.icon,
+                        time: 2000
+                    });
+                    if(data.icon==1){
+                        location.href="__MODULE__/Index/index";
+                    }
+                }
+            });
+        }
+    );
+</script>
+<!--/此乃百度统计代码，请自行删除
+</body>
+</html>

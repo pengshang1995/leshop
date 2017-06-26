@@ -1,0 +1,194 @@
+<include file="Common:_header"/>
+<div class="admin-main">
+    <!--<blockquote class="layui-elem-quote">
+        <a href="javascript:;" class="layui-btn layui-btn-small" deal="add" id="add">
+            <i class="layui-icon">&#xe608;</i> 添加图片
+        </a>
+        &lt;!&ndash; <a href="#" class="layui-btn layui-btn-small" id="import">
+             <i class="layui-icon">&#xe608;</i> 导入信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 导出信息
+         </a>
+         <a href="#" class="layui-btn layui-btn-small" id="getSelected">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i> 获取全选信息
+         </a>
+         <a href="javascript:;" class="layui-btn layui-btn-small" id="search">
+             <i class="layui-icon">&#xe615;</i> 搜索
+         </a>&ndash;&gt;
+    </blockquote>-->
+    <fieldset class="layui-elem-field">
+        <legend>男人物模型列表</legend>
+        <div class="layui-field-box layui-form">
+            <table class="layui-table admin-table">
+                <thead>
+                <tr>
+                    <th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>
+                    <th>位置</th>
+                    <th>图片详情</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+                <empty name="man.model">
+                    <tr>
+                        <td colspan="4">没有任何数据</td>
+                    </tr>
+                    <else />
+                    <foreach name="man.model" item="vo" key="k" >
+                        <notempty name="vo">
+                            <tr>
+                                <td><input type="checkbox"  lay-skin="primary"></td>
+                                <td>
+                                    <switch name="k" ><case value="left">左面</case><case value="right">右面</case><case value="front">前面</case><case value="behind">后面</case><default /></switch>
+                                </td>
+                                <td><img src="__ROOT__{$vo}" width="100px" height="100px"/></td>
+                                <td><button class="layui-btn layui-btn-small" deal="del" aa="{$man.sex}" pos="{$k}" ><i class="layui-icon"></i></button></td>
+                            </tr>
+                        </notempty>
+                    </foreach>
+                </empty>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <fieldset class="layui-elem-field">
+        <legend>女人物模型列表</legend>
+        <div class="layui-field-box layui-form">
+            <table class="layui-table admin-table">
+                <thead>
+                <tr>
+                    <th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>
+                    <th>位置</th>
+                    <th>图片详情</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+                <empty name="woman.model">
+                    <tr>
+                        <td colspan="4">没有任何数据</td>
+                    </tr>
+                    <else />
+                    <foreach name="woman.model" item="vo" key="k" >
+                        <notempty name="vo">
+                            <tr>
+                                <td><input type="checkbox"  lay-skin="primary"></td>
+                                <td>
+                                    <switch name="k" ><case value="left">左面</case><case value="right">右面</case><case value="front">前面</case><case value="behind">后面</case><default /></switch>
+                                </td>
+                                <td><img src="__ROOT__{$vo}" width="100px" height="100px"/></td>
+                                <td><button class="layui-btn layui-btn-small" deal="del" aa="{$woman.sex}" pos="{$k}" ><i class="layui-icon"></i></button></td>
+                            </tr>
+                        </notempty>
+                    </foreach>
+                </empty>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <div class="admin-table-page">
+        <div id="paged" class="page">
+        </div>
+    </div>
+    <form class="layui-form" action="javascript:;" id="data_forms">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">多图上传</label>
+            <div class="layui-input-block" style="width: 50%">
+                <webuploader name="image" url="{:U('Admin/Shop/ajax_upload')}" word="注：（最多上传1张图片）" only="1" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模型位置</label>
+            <div class="layui-input-block" style="width: 50%">
+                <select name="position" lay-filter="aihao">
+                    <option value="">请选择模型位置</option>
+                    <option value="front">前面</option>
+                    <option value="behind">后面</option>
+                    <option value="left">左面</option>
+                    <option value="right">右面</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模型性别</label>
+            <div class="layui-input-block" style="width: 50%">
+                <select name="sex" lay-filter="aihao">
+                    <option value="">请选择模型性别</option>
+                    <option value="1">男</option>
+                    <option value="0">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" deal="upload" lay-filter="demo1">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<webuploaderjs />
+<script src="__PUBLIC__/layer.js"></script>
+<script src="__PUBLIC__/admin/layui/lay/lib/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/admin/layui/layui.js"></script>
+<script type="text/javascript">
+    var public ="__PUBLIC__/admin/";
+    layui.config({
+        base: public+'js/'
+    });
+
+    layui.use(['form'], function() {
+
+    });
+    $('button').click(
+        function () {
+            var deal=$(this).attr('deal');
+            switch (deal){
+                case 'del':
+                    var id=$(this).attr('aa');
+                    var pos=$(this).attr('pos');
+                    layer.confirm('你确定要删除吗？', {
+                        btn: ['确定', '取消'] //可以无限个按钮
+                        ,btn3: function(index, layero){
+                            //按钮【按钮三】的回调
+                        }
+                    }, function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"__MODULE__/Model/deleteModel",
+                            type:'post',
+                            data:{'sex':id,'pos':pos},
+                            async:true,
+                            success:function (data) {
+                                if(data==true){
+                                    layer.msg('删除成功');
+                                    location.reload();
+                                }else if(data==false){
+                                    layer.msg('删除失败');
+                                }
+                            }
+                        });
+                    });
+                    break;
+                case 'upload':
+                    $.ajax({
+                        url:"__MODULE__/Model/uploadModel",
+                        type:'post',
+                        data:$('#data_forms').serialize(),
+                        async:true,
+                        success:function (data) {
+
+                            if (data==true){
+                                layer.msg('添加成功');
+                                location.reload();
+                            }else{
+                                layer.msg('添加失败');
+                            }
+                        }
+                    });
+                    break;
+            }
+        }
+    );
+</script>
+<include file="layout:footer"/>

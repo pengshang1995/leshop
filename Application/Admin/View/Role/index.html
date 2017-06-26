@@ -1,0 +1,81 @@
+<include file="Common/_header"/>
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 角色管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container"   ng-app="app" ng-controller="RoleCtrl" >
+    <div class="cl pd-5 bg-1 bk-gray"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" href="javascript:;" ng-click="layer_show('添加角色','{:U(\'Role/add_role\')}','800')"><i class="Hui-iconfont">&#xe600;</i> 添加角色</a> </span></div>
+    <table class="table table-border table-bordered table-hover table-bg"  >
+        <thead>
+        <tr>
+            <th scope="col" colspan="6">角色管理</th>
+        </tr>
+        <tr class="text-c">
+            <th width="25"><input type="checkbox" value="" name=""></th>
+            <th width="40">ID</th>
+            <th width="200">角色名</th>
+            <th width="70">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-c" ng-repeat="x in names">
+            <td><input type="checkbox" value="" name=""></td>
+            <td>{{x.id}}</td>
+            <td>{{x.title}}</td>
+            <td class="f-14"><a title="编辑" href="javascript:;"  ng-click="editRole('角色编辑','{:U(\'Role/editRole\')}',x.id)" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" ng-click="deleteRole(x.id)" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<include file="Common/_footer"/>
+<script type="text/javascript" src="__PUBLIC__/admin/lib/jquery.ztree.core.js" ></script>
+<script type="text/javascript">
+    app.controller('RoleCtrl',function ($http,$scope) {
+        $http({
+            method: 'POST',
+            url: "{:U('Role/getRole')}"
+        }).then(function successCallback(response) {
+            $scope.names=response.data;
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+        $scope.editRole=function(title,url,id){
+            url+="?id="+id;
+            layer_show(title,url);
+        };
+        $scope.deleteRole=function (id) {
+            layer.confirm('确认要删除吗？',function(index){
+                $http({
+                    method: 'POST',
+                    url: "{:U('Role/delete_deal')}",
+                    data:{id:id}
+                }).then(function successCallback(resonse) {
+                    for(var i in $scope.names){
+                        if($scope.names[i].id==id){
+                            $scope.names.splice(i,1);
+                        }
+
+                    }
+                    layer.msg(resonse.data.message,{icon: resonse.data.icon,time:1000});
+                });
+            });
+        }
+        $scope.layer_show=function(title,url,w,h){
+            var index = layer.open({
+                type: 2,
+                content: url,
+                title: title,
+                maxmin: true
+            });
+            layer.full(index);
+            /*  layer.open({
+             type: 2,
+             area: [w+'px', h +'px'],
+             fix: false, //不固定
+             maxmin: true,
+             shade:0.4,
+
+             });*/
+        }
+    });
+</script>
+</body>
+</html>

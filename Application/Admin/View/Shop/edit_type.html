@@ -1,0 +1,68 @@
+<include file="Common:_header"/>
+<form class="layui-form" action="javascript:;" id="data_forms">
+    <div class="layui-form-item">
+        <label class="layui-form-label">顶级节点</label>
+        <div class="layui-input-block" style="width: 40%">
+            <select name="pid" lay-filter="aihao">
+                <option value="0">顶级类型</option>
+                {$lay}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类名称</label>
+        <div class="layui-input-block"  style="width: 40%">
+            <input type="text" name="typename" value="{$name.typename}" lay-verify="title" autocomplete="off" placeholder="分类名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" >
+            <input type="hidden" value="{$name.id}" name="id">
+            <button class="layui-btn" lay-submit="" deal="upload" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/layui/layui.js"></script>
+<script src="__PUBLIC__/admin/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form(),
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
+        /* form.verify({
+         title: function(value) {
+         if(value.length < 5) {
+         return '标题至少得5个字符啊';
+         }
+         },
+         pass: [/(.+){6,12}$/, '密码必须6到12位'],
+         content: function(value) {
+         layedit.sync(editIndex);
+         }
+         });*/
+        form.on('submit(demo1)', function (data) {
+            $.ajax({
+                url:"__MODULE__/Shop/editGoodType",
+                type:'post',
+                data:$("#data_forms").serialize(),
+                async:true,
+                success:function (data) {
+                    if(data==true){
+                        layer.msg('添加成功');
+                        parent.location.reload();
+                    }else if(data==false){
+                        layer.msg('添加失败');
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<include file="layout:footer"/>

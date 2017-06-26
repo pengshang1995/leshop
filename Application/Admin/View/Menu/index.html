@@ -1,0 +1,77 @@
+<include file="Common/_header"/>
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 菜单管理 <span class="c-gray en">&gt;</span> 菜单列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<section class="main-width" style="height: 90%">
+    <div class="row cl">
+        <div class="col-xs-0 col-sm-2" >
+            <div class="zTreeDemoBackground left">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-10" style="height: 500px">
+            <iframe scrolling="yes" id="deptIframe" frameborder="0" src="{:U('Menu/welcome')}" width="100%" height="80%"></iframe>
+        </div>
+    </div>
+</section>
+<include file="Common/_footer"/>
+<script type="text/javascript" src="admin/lib/jquery.ztree.core.js" ></script>
+<script type="text/javascript">
+    var setting = {
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback:{
+            onClick:onClick
+        }
+    };
+    var zNodes;
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Menu/getMenu')}",
+            async: false,
+            success: function(msg){
+                zNodes=msg;
+            }
+        });
+    })
+
+   /* var zNodes = [
+        {id:0,name:"根节点", open:true, iconOpen:"css/img/diy/1_open.png", iconClose:"css/img/diy/1_close.png"},
+        { id:1, pId:0, name:"展开、折叠 自定义图标不同", open:true, iconOpen:"css/img/diy/1_open.png", iconClose:"css/img/diy/1_close.png"},
+        { id:11, pId:1, name:"叶子节点1", icon:"css/img/diy/2.png"},
+        { id:12, pId:1, name:"叶子节点2", icon:"css/img/diy/3.png"},
+        { id:13, pId:1, name:"叶子节点3", icon:"css/img/diy/5.png"},
+        { id:2, pId:0, name:"展开、折叠 自定义图标相同", open:true, icon:"css/img/diy/4.png"},
+        { id:21, pId:2, name:"叶子节点1", icon:"css/img/diy/6.png"},
+        { id:22, pId:2, name:"叶子节点2", icon:"css/img/diy/7.png"},
+        { id:23, pId:2, name:"叶子节点3", icon:"css/img/diy/8.png"},
+        { id:3, pId:0, name:"不使用自定义图标", open:true },
+        { id:31, pId:3, name:"叶子节点1"},
+        { id:32, pId:3, name:"叶子节点2"},
+        { id:33, pId:3, name:"叶子节点3"}
+
+    ];*/
+    function onClick(event, treeId, treeNode, clickFlag) {
+        url="{:U('Menu/dis_menu')}";
+        loadIframe('deptIframe', url+'?id=' + treeNode.id)
+    }
+    function loadIframe(iframeName, url) {
+        var iframe = $('#' + iframeName);
+        if (iframe.length) {
+            iframe.attr('src', url);
+            return false;
+        }
+        return true;
+    }
+
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+
+    //-->
+</script>
+</body>
+</html>

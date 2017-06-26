@@ -1,0 +1,70 @@
+<extend name="layout:base" />
+<block name="title"><title>Lee商城--注册</title></block>
+<block name="top-style"></block>
+<block name="main">
+	<!-- //header -->
+	<div class="banner-top">
+		<div class="container">
+			<h2 class="animated wow fadeInLeft" data-wow-delay=".5s">注册</h2>
+			<h3 class="animated wow fadeInRight" data-wow-delay=".5s"><a href="index.html">首页</a><label>/</label>注册</h3>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+	<!-- contact -->
+	<div class="login">
+		<div class="container">
+			<form action="{:U('Public/do_region')}" method="post">
+				<div class="col-md-6 login-do1 animated wow fadeInLeft" data-wow-delay=".5s">
+					<div class="login-mail">
+						<input type="text" name="email" placeholder="邮箱" required="">
+						<i class="glyphicon glyphicon-envelope"></i>
+					</div>
+					<div class="login-mail">
+						<input type="password" name="password" placeholder="密码" required="">
+						<i class="glyphicon glyphicon-lock"></i>
+					</div>
+					<div class="login-mail">
+						<input type="password" name="re-password" placeholder="确认密码" required="">
+						<i class="glyphicon glyphicon-lock"></i>
+					</div>
+					<a class="news-letter" href="#">
+						<label class="checkbox1"><input type="checkbox" name="checkbox" ><i> </i>我同意此协议</label>
+					</a>
+
+				</div>
+				<div class="col-md-6 login-do animated wow fadeInRight" data-wow-delay=".5s">
+					<label class="hvr-sweep-to-top login-sub">
+						<input type="submit" value="注册">
+					</label>
+					<p>已有账户：</p>
+					<a href="login.html" class="hvr-sweep-to-top">登录</a>
+				</div>
+				<div class="clearfix"> </div>
+			</form>
+		</div>
+
+
+	</div>
+	<div class="social animated wow fadeInUp" data-wow-delay=".1s">
+		<div class="container">
+			<div class="col-sm-3 social-ic">
+				<a href="#">FACEBOOK</a>
+			</div>
+			<div class="col-sm-3 social-ic">
+				<a href="#">TWITTER</a>
+			</div>
+			<div class="col-sm-3 social-ic">
+				<a href="#">GOOGLE+</a>
+			</div>
+			<div class="col-sm-3 social-ic">
+				<a href="#">PINTEREST</a>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+
+</block>
+<block name="footer-script">
+
+</block>
+

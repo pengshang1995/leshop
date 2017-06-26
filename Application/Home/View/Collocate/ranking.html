@@ -1,0 +1,228 @@
+<extend name="layout:base" />
+<block name="title"><title>乐搭配商城--个人试衣间</title></block>
+<block name="top-style">
+    <script src="__PUBLIC__/js/easyResponsiveTabs.js" type="text/javascript"></script>
+    <link href="__PUBLIC__/css/easy-responsive-tabs.css" rel="stylesheet" type="text/css" media="all"/>
+    <link rel="stylesheet" href="__PUBLIC__/css/global.css">
+    <script src="__PUBLIC__/js/slides.min.jquery.js"></script>
+
+    <script>
+        var public='__PUBLIC__';
+        $(function(){
+            $('#products').slides({
+                preload: true,
+                preloadImage: public+'img/loading.gif',
+                effect: 'slide, fade',
+                crossfade: true,
+                slideSpeed: 350,
+                fadeSpeed: 500,
+                generateNextPrev: true,
+                generatePagination: false
+            });
+        });
+    </script>
+</block>
+<block name="main">
+    <section class="main" style="margin-top: 10px">
+        <p class="layui-elem-quote">搭配排行榜</p>
+        <table class="layui-table" lay-even lay-skin="nob">
+            <colgroup>
+                <col width="100">
+                <col width="200">
+                <col width="60">
+                <col width="100">
+                <col width="60">
+                <col width="60">
+                <col width="80">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>排名</th>
+                <th>搭配方案名称</th>
+                <th>性别</th>
+                <th>喜爱量</th>
+                <th>关注</th>
+                <th>生成效果图</th>
+                <th>一键添加购物车</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="newlist.data" id="vo" key="k">
+                <tr>
+                    <td>{$k+($p-1)*20}</td>
+                    <td>{$vo.title}</td>
+                    <td>
+                        <if condition="$vo.sex eq 1">
+                            男
+                            <else />
+                            女
+                        </if>
+                    </td>
+                    <td>
+                        {$vo.star}
+                    </td>
+                    <td>
+                        <if condition="$vo.truestar eq 1">
+                            <button class="layui-btn layui-btn-mini" style="background-color: #CD1F25;" aa="{$vo.id}" bb="false" onclick="star(this)">
+                                <i  class="fa fa-meh-o fa-lg " aria-hidden="true" style="text-align: center;"></i>取消关注
+                            </button>
+                            <else />
+                            <button class="layui-btn layui-btn-mini"  aa="{$vo.id}" onclick="star(this)" bb="true">
+                                <i  class="fa fa-meh-o fa-lg " aria-hidden="true" style="text-align: center;"></i>关注
+                            </button>
+                        </if>
+                    </td>
+                    <td>
+                        <button class="layui-btn layui-btn-mini" aa="{$vo.id}">生成效果图</button>
+                    </td>
+                    <td>
+                        <button class="layui-btn layui-btn-mini" style="background-color: #CD1F25;" aa="{$vo.id}">一键加入购物车</button>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+        <div id="demo3" style="margin: 0px auto;width: 80%;">
+
+        </div>
+        <input type="hidden" id="total" value="{$newlist.total}" />
+        <input type="hidden" id="page" value="{$p}" />
+    </section>
+</block>
+
+<block name="footer-script">
+    <script src="__PUBLIC__/layui/layui.js"></script>
+    <script>
+        function star(obj) {
+            var id= $(obj).attr('aa');
+            var deal= $(obj).attr('bb');
+
+            if(deal=="true"){
+                $.ajax({
+                    url:"__MODULE__/collocate/addStar",
+                    type:'post',
+                    data:{'id':id},
+                    async:true,
+                    success:function (data) {
+                        if(data==true){
+                            layer.msg('关注成功');
+                            location.reload();
+                        }else{
+                            layer.msg('关注失败');
+                        }
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"__MODULE__/collocate/deleteStar",
+                    type:'post',
+                    data:{'id':id},
+                    async:true,
+                    success:function (data) {
+                        if(data==true){
+                            layer.msg('删除成功');
+                            location.reload();
+                        }else{
+                            layer.msg('删除失败');
+                        }
+                    }
+                });
+            }
+        }
+        function setParam(param,value){
+            var query = location.search.substring(1);
+            var p = new RegExp("(^|)" + param + "=([^&]*)(|$)");
+            if(p.test(query)){
+                //query = query.replace(p,"$1="+value);
+                var firstParam=query.split(param)[0];
+                var secondParam=query.split(param)[1];
+                if(secondParam.indexOf("&")>-1){
+                    var lastPraam=secondParam.split("&")[1];
+                    return  '?'+firstParam+'&'+param+'='+value+'&'+lastPraam;
+                }else{
+                    if(firstParam){
+                        return '?'+firstParam+''+param+'='+value;
+                    }else{
+                        return '?'+param+'='+value;
+                    }
+                }
+            }else{
+                if(query == ''){
+                    return '?'+param+'='+value;
+                }else{
+                    return '?'+query+'&'+param+'='+value;
+                }
+            }
+        }
+        var total=$('#total').val();
+        var p=$('#page').val();
+        layui.use(['laypage', 'layer'], function(){
+            var laypage = layui.laypage
+                ,layer = layui.layer;
+            laypage({
+                cont: 'demo3'
+                ,pages: total
+                ,skip: true,
+                curr: p,
+                jump: function(e, first){ //触发分页后的回调
+                    if(!first){ //一定要加此判断，否则初始时会无限刷新
+                        location.href=setParam("p",e.curr);
+                    }
+                }
+            });
+
+        });
+    </script>
+    <script src="__PUBLIC__/layer.js"></script>
+    <script type="text/javascript">
+        $('button').click(function () {
+            switch($(this).html()){
+                case '生成效果图':
+                    var id= $(this).attr('aa');
+                    $.ajax({
+                        url:"__MODULE__/Collocate/index",
+                        data: {'id':id},
+                        type:'post',
+                        async:false,
+                        success:function (dataTwo) {
+                            data=dataTwo;
+                        }
+                    });
+                    base64.splice(0,base64.length);
+                    i=0;
+                    deal='front';
+                    hecheng();
+                    break;
+                case '一键加入购物车':
+                    var id= $(this).attr('aa');
+                    layer.confirm('你确定一键添加购物车吗？', {
+                        btn: ['确定', '取消'] //可以无限个按钮
+                        ,btn3: function(index, layero){
+                            //按钮【按钮三】的回调
+                        }
+                    }, function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"__MODULE__/Cart/addBatchCart",
+                            data: {'id':id},
+                            type:'post',
+                            async:false,
+                            success:function (data) {
+                                if (data == true) {
+                                    layer.msg('添加购物车成功');
+                                } else if (data == false) {
+                                    layer.msg('请先登录!');
+                                    location.href = "__MODULE__/Public/login";
+                                } else{
+                                    layer.msg(data);
+                                }
+                            }
+                        });
+                    });
+                    break;
+
+            }
+        });
+    </script>
+</block>

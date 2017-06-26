@@ -1,0 +1,123 @@
+<include file="Common:_header"/>
+<fieldset class="layui-elem-field">
+    <legend>商品规格</legend>
+    <div class="layui-field-box layui-form">
+        <table class="layui-table admin-table">
+            <thead>
+            <tr>
+                <th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>
+                <th>编号</th>
+                <th>商品规格参数</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="content">
+            <empty name="size">
+                <tr>
+                    <td colspan="4">没有任何数据</td>
+                </tr>
+                <else />
+                <volist name="size" id="vo">
+                    <tr>
+                        <td><input type="checkbox"  lay-skin="primary"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.size}</td>
+                        <td><button class="layui-btn layui-btn-small" deal="del" aa="{$vo.id}"><i class="layui-icon"></i></button></td>
+                    </tr>
+                </volist>
+            </empty>
+            </tbody>
+        </table>
+    </div>
+</fieldset>
+<form class="layui-form" action="javascript:;" id="data_forms">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品规格</label>
+        <div class="layui-input-block"  style="width: 40%">
+            <input type="text" name="size"  placeholder="规格参数" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" >
+            <input type="hidden" value="{$id}" name="id">
+            <button class="layui-btn" lay-submit="" deal="upload" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/layui/layui.js"></script>
+<script src="__PUBLIC__/admin/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form(),
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
+        /* form.verify({
+         title: function(value) {
+         if(value.length < 5) {
+         return '标题至少得5个字符啊';
+         }
+         },
+         pass: [/(.+){6,12}$/, '密码必须6到12位'],
+         content: function(value) {
+         layedit.sync(editIndex);
+         }
+         });*/
+        form.on('submit(demo1)', function (data) {
+            $.ajax({
+                url:"__MODULE__/Shop/addSizeDeal",
+                type:'post',
+                data:$("#data_forms").serialize(),
+                async:true,
+                success:function (data) {
+                    if(data==true){
+                        layer.msg('添加成功');
+                        location.reload();
+                    }else if(data==false){
+                        layer.msg('添加失败');
+                    }
+                }
+            });
+            return false;
+        });
+    });
+
+    $('button').click(
+        function () {
+            var deal=$(this).attr('deal');
+            switch (deal){
+                case 'del':
+                    var id=$(this).attr('aa');
+                    layer.confirm('你确定要删除吗？', {
+                        btn: ['确定', '取消'] //可以无限个按钮
+                        ,btn3: function(index, layero){
+                            //按钮【按钮三】的回调
+                        }
+                    }, function(index, layero){
+                        //按钮【按钮一】的回调
+                        $.ajax({
+                            url:"__MODULE__/Shop/deleteSize",
+                            type:'post',
+                            data:{'id':id},
+                            async:true,
+                            success:function (data) {
+                                if(data==true){
+                                    layer.msg('删除成功');
+                                    location.reload();
+                                }else if(data==false){
+                                    layer.msg('删除失败');
+                                }
+                            }
+                        });
+                    });
+                    break;
+            }
+        }
+    );
+</script>
+<include file="layout:footer"/>

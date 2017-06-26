@@ -1,0 +1,111 @@
+<include file="Common:_header"/>
+<form class="layui-form" action="javascript:;" id="data_forms">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名称</label>
+        <div class="layui-input-block" style="width: 40%">
+            <input type="text" name="goodname" lay-verify="title" autocomplete="off" placeholder="" value="{$goodinfo.goodname}" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品类别</label>
+        <div class="layui-input-block" style="width: 40%">
+            <select name="typeid" lay-filter="aihao" value="{$goodinfo.typeid}">
+                <option value="0">顶级类型</option>
+                {$data}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">更改图片</label>
+        <div class="layui-input-block" style="width: 40%;float: left;">
+            <webuploader  name="image" url="{:U('Admin/Shop/ajax_upload')}" word="注：（仅支持单图上传）" only="1" />
+        </div>
+        <div class="layui-input-block" style="width:10%;float: left;">
+            <img src="{$goodinfo.savepath}" width="150px" height="200px">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">商品描述</label>
+        <div class="layui-input-block">
+            <umeditor name="content" content="{$goodinfo.content|htmlspecialchars_decode}"   />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品数量</label>
+        <div class="layui-input-block" style="width: 40%">
+            <input type="number" name="num" lay-verify="number" value="{$goodinfo.num}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品价格</label>
+        <div class="layui-input-block" style="width: 40%">
+            <input type="number" name="goodprice" lay-verify="number" value="{$goodinfo.goodprice}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上下架</label>
+        <div class="layui-input-block">
+            <if condition="$goodinfo['status'] eq 1 ">
+                <input type="radio" name="status" value="1"  title="上架" checked="">
+                <input type="radio" name="status" value="0" title="下架" >
+            </if>
+            <if condition="$goodinfo['status'] eq 0 ">
+                <input  name="status" value="0" type="radio" title="下架"  checked="">
+                <input type="radio" name="status" value="1" title="上架"  >
+            </if>
+
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="hidden" value="{$goodinfo.id}" name="id" >
+            <button class="layui-btn" lay-submit="" deal="upload" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script src="__PUBLIC__/admin/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/admin/layui/layui.js"></script>
+<umeditorjs />
+<webuploaderjs />
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form(),
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //自定义验证规则
+        /* form.verify({
+         title: function(value) {
+         if(value.length < 5) {
+         return '标题至少得5个字符啊';
+         }
+         },
+         pass: [/(.+){6,12}$/, '密码必须6到12位'],
+         content: function(value) {
+         layedit.sync(editIndex);
+         }
+         });*/
+
+        form.on('submit(demo1)', function(data) {
+            $.ajax({
+                url:"__MODULE__/Shop/editGood",
+                type:'post',
+                data:$("#data_forms").serialize(),
+                async:true,
+                success:function (data) {
+                    if(data==true){
+                        layer.msg('保存成功');
+                        parent.location.reload();
+                    }else if(data==false){
+                        layer.msg('保存失败');
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<include file="layout:footer"/>
